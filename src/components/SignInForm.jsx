@@ -1,9 +1,11 @@
 import React from 'react';
 import '../css/SignIn.css';
 
+import { Link } from 'react-router-dom';
+
 const SignInForm = () => {
   return (
-    <div className="background">
+    <div>
       <div className="frame61">
         <div className="frame68">
           <div className="frame67">
@@ -22,7 +24,7 @@ const SignInForm = () => {
               <label htmlFor="remember">Remember me</label>
               </div>
               <p>
-                New to Netflix? <a href="#">Sign up now.</a>
+                New to Netflix? <Link to="/signup">Sign up now.</Link>
               </p>
             </div>
             <p>
