@@ -180,3 +180,29 @@
 .frame65 a:hover {
   text-decoration: underline;
 }
+
+
+.radio-option {
+  display:flex;
+  align-items: center;
+  direction: rtl;
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  
+  color: white;
+  cursor: pointer;
+  transition: 0.3s ease;
+  font-family: Netflix Sans, sans-serif;
+  font-size: 16px;
+}
+
+.radio-option:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.radio-option input[type='radio'] {
+  margin-right: 10px;
+  accent-color: red; /* Netflix style */
+  transform: scale(0.5);
+  cursor: pointer;
+}
