@@ -11,14 +11,29 @@ const WhoIsWatching = () => {
   const { user } = useAuth(); 
   const [profiles, setProfiles] = useState([]);
 
+
+
+  const fetchProfiles = async () => {
+    try {
+      const res = await fetch(`${config.SERVER_API}/user/profiles/${user.id}`);
+      const data = await res.json();
+      setProfiles(data);
+    } catch (err) {
+      console.error('Failed to fetch profiles:', err);
+    }
+  };
+ 
+
   useEffect(() => {
     if (Array.isArray(user?.profiles)) {
       setProfiles(user.profiles);
     } else {
       setProfiles([]); 
     }
-    console.log('user:', user);
-  console.log('user.profiles:', user?.profiles);
+    if (user?.id) {
+      fetchProfiles();
+    }
+
   }, [user]);
 
   const handleAddProfile = async () => {
@@ -73,6 +88,8 @@ const WhoIsWatching = () => {
           name={profile.name}
           profilePhoto={profile.profilePhoto}
           profileId={profile._id}
+          userId={user.id}
+          refreshProfiles={fetchProfiles}
         />
         
         ))}

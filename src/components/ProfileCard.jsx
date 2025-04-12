@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
-import { useAuth } from '../context/AuthContext';
 import config from '../config';
 
 const ProfileCard = ({ name, profilePhoto, userId, profileId, refreshProfiles }) => {
-   const { user } = useAuth(); 
   const [avatar, setAvatar] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState(name);
@@ -23,12 +21,14 @@ const ProfileCard = ({ name, profilePhoto, userId, profileId, refreshProfiles })
     };
 
     if (profilePhoto !== 6) {
-      getAvatarByName(profilePhoto); // assuming profilePhoto is a name or number
+      getAvatarByName(profilePhoto);
     }
   }, [profilePhoto]);
+
   const handleDelete = async () => {
+
     if (!userId || !profileId) return;
-    const confirm = window.confirm("האם אתה בטוח שברצונך למחוק את הפרופיל?");
+    const confirm = window.confirm("Are you Sure you want to delete this profile ?");
     if (!confirm) return;
 
     try {
@@ -40,24 +40,25 @@ const ProfileCard = ({ name, profilePhoto, userId, profileId, refreshProfiles })
       console.error('Failed to delete profile:', err);
     }
   };
+
   const handleNameClick = () => setIsEditing(true);
   const handleChange = (e) => setNewName(e.target.value);
 
   const handleKeyDown = async (e) => {
-    console.log('key pressed:', e.key);
     if (e.key === 'Enter') {
+      e.preventDefault();
       await saveName();
     }
   };
 
   const saveName = async () => {
+    if (!newName.trim() || !userId || !profileId) return;
     try {
-      await fetch(`${config.SERVER_API}/user/profiles/${user.id}/${profileId}`, {
+      await fetch(`${config.SERVER_API}/user/profiles/${userId}/${profileId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: newName.trim() }),
       });
-     
       setIsEditing(false);
       refreshProfiles?.();
     } catch (err) {
@@ -80,24 +81,18 @@ const ProfileCard = ({ name, profilePhoto, userId, profileId, refreshProfiles })
       justifyContent: 'center',
       alignItems: 'center',
       cursor: 'pointer',
+      position: 'relative',
     },
-    face: {
-      fontSize: '30px',
-      marginBottom: '8px',
-    },
-    plus: {
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
+    deleteIcon: {
+      position: 'absolute',
+      top: '5px',
+      right: '5px',
       color: 'white',
-      width: '144px',
-      height: '144px',
-      borderRadius: '10px',
-      fontSize: '14px',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
+      backgroundColor: 'rgba(0,0,0,0.4)',
+      borderRadius: '50%',
+      padding: '4px',
       cursor: 'pointer',
+      zIndex: 10,
     },
     input: {
       fontSize: '14px',
@@ -110,45 +105,35 @@ const ProfileCard = ({ name, profilePhoto, userId, profileId, refreshProfiles })
     name: {
       marginTop: '8px',
       cursor: 'pointer',
-    },deleteIcon: {
-      position: 'relative',
-      top: '-90px',
-      right: '5px',
-      color: 'white',
-      backgroundColor: 'rgba(0,0,0,0.4)',
-      borderRadius: '50%',
-      padding: '4px',
-      cursor: 'pointer',
-      zIndex: 10,
-    },
+    }
   };
 
   return (
     <div>
-    <div style={styles.profileCard}>
-      {profilePhoto === 6 ? (
-        <IoIosAddCircleOutline size={100} />
+      <div style={styles.profileCard}>
+        {profilePhoto === 6 ? (
+          <IoIosAddCircleOutline size={100} />
+        ) : (
+          <>
+            <MdDelete size={20} style={styles.deleteIcon} onClick={handleDelete} />
+            <div style={styles.face}></div>
+          </>
+        )}
+      </div>
+      {isEditing ? (
+        <input
+          type="text"
+          value={newName}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          onBlur={saveName}
+          autoFocus
+          style={styles.input}
+        />
       ) : (
-        <>
-          <MdDelete size={20} style={styles.deleteIcon} onClick={handleDelete} />
-          <div style={styles.face}></div>
-        </>
+        <p onClick={handleNameClick} style={styles.name}>{newName}</p>
       )}
     </div>
-    {isEditing ? (
-      <input
-        type="text"
-        value={newName}
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
-        onBlur={saveName}
-        autoFocus
-        style={styles.input}
-      />
-    ) : (
-      <p onClick={handleNameClick} style={styles.name}>{newName}</p>
-    )}
-  </div>
   );
 };
 
