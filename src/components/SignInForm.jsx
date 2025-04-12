@@ -12,11 +12,13 @@ import { Link } from 'react-router-dom';
 const SignInForm = () => {
 
   const { login } = useAuth();
+  const [rememberMe, setRememberMe] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const navigate = useNavigate();
   
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+
   const handleSubmit = async (e) => {
     e.preventDefault(); // you only need this once 🙂
   
@@ -24,7 +26,8 @@ const SignInForm = () => {
       const res = await fetch(config.SERVER_API + '/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, rememberMe }),
+
       });
   
       const data = await res.json();
@@ -34,10 +37,12 @@ const SignInForm = () => {
           token: data.token,
           email: data.email,
           role: data.role,
+          id:data.id,
+          profiles: data.profiles
         });
   
         if (data.role === 'admin') navigate('/admin');
-        else navigate('/Home');
+        else navigate('/whoiswatching');
       } else {
         alert(data.message || 'Login failed');
       }
@@ -76,10 +81,16 @@ const SignInForm = () => {
           </div>
           <div className="frame65">
             <div className="frame64">
-                <div className='checkRememberMe'>
-              <input type="checkbox" id="remember" />
+            <div className='checkRememberMe'>
+              <input
+                type="checkbox"
+                id="remember"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
               <label htmlFor="remember">Remember me</label>
-              </div>
+            </div>
+
               <p>
                 New to Netflix? <Link to="/signup">Sign up now.</Link>
               </p>

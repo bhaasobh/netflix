@@ -1,0 +1,93 @@
+.watching-container {
+    text-align: center;
+    background-color: #111;
+    color: white;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .profiles {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+  }
+  
+  .profile {
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .face {
+    font-size: 30px;
+    margin-bottom: 10px;
+  }
+  
+  .add {
+    background-color: #333;
+    color: white;
+    border: 2px dashed white;
+  }
+  
+  .plus {
+    font-size: 30px;
+  }
+  .profile-card {
+    background-color: #222;
+    color: white;
+    width: 120px;
+    height: 120px;
+    border-radius: 10px;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .profile-card .face {
+    font-size: 30px;
+    margin-bottom: 8px;
+  }
+  
+  .profile-card span {
+    font-size: 12px;
+    opacity: 0.7;
+  }
+  
+  .profile-card.add {
+    background-color: #444;
+    border: 2px dashed #aaa;
+  }
+  
+
+  .watching-container {
+    text-align: center;
+    background-color: #111;
+    color: white;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .profiles {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-top: 30px;
+  }
+  
+  
