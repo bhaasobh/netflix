@@ -1,0 +1,104 @@
+.watching-container {
+    text-align: center;
+    background-color: #111;
+    color: white;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .watching-container span 
+  {
+    
+    font-family: ABeeZee;
+font-weight: 400;
+font-size: 50px;
+line-height: 100%;
+letter-spacing: 0px;
+vertical-align: middle;
+color: rgba(255, 255, 255, 1);
+
+  }
+  .profiles {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+  }
+  
+  .profile {
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .face {
+    font-size: 30px;
+    margin-bottom: 10px;
+  }
+  
+  .add {
+   
+    color: white;
+    width: 120px;
+    height: 120px;
+    font-size: 14px;
+    
+  }
+  
+  .plus {
+    font-size: 50px;
+  }
+  .profile-card {
+    background-color: #222;
+    color: white;
+    width: 120px;
+    height: 120px;
+    border-radius: 10px;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .profile-card .face {
+    font-size: 30px;
+    margin-bottom: 8px;
+  }
+  
+  .profile-card span {
+    font-size: 12px;
+    opacity: 0.7;
+  }
+  
+ 
+
+  .watching-container {
+    text-align: center;
+    background-color: #111;
+    color: white;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .profiles {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-top: 30px;
+  }
+  
+  
