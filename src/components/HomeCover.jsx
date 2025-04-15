@@ -6,6 +6,13 @@ const HomeCover = ({ profileId, user }) => {
   const [movies, setMovies] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showModal, setShowModal] = useState(false);
+  const [showMoreInfoModal, setShowMoreInfoModal] = useState(false);
+const [selectedMovie, setSelectedMovie] = useState(null);
+
+const handleMoreInfo = (movie) => {
+  setSelectedMovie(movie);
+  setShowMoreInfoModal(true);
+};
 
 
   useEffect(() => {
