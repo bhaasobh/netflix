@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
+import { useNavigate } from 'react-router-dom'; // ⬅️ add this at the top
 import config from '../config';
 
 const ProfileCard = ({ name, profilePhoto, userId, profileId, refreshProfiles }) => {
   const [avatar, setAvatar] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState(name);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const getAvatarByName = async (name) => {
@@ -110,29 +113,45 @@ const ProfileCard = ({ name, profilePhoto, userId, profileId, refreshProfiles })
 
   return (
     <div>
-      <div style={styles.profileCard}>
+      <div
+  style={profilePhoto === 6 ? styles.profileCardAdd : styles.profileCard}
+  onClick={() => {
+    if (profilePhoto !== 6) navigate(`/Home/${profileId}`);
+  }}
+>
+
         {profilePhoto === 6 ? (
           <IoIosAddCircleOutline size={100} />
         ) : (
           <>
-            <MdDelete size={20} style={styles.deleteIcon} onClick={handleDelete} />
+            <MdDelete
+              size={20}
+              style={styles.deleteIcon}
+              onClick={(e) => {
+                e.stopPropagation(); // prevent navigation
+                handleDelete();
+              }}
+            />
             <div style={styles.face}></div>
           </>
         )}
       </div>
-      {isEditing ? (
-        <input
-          type="text"
-          value={newName}
-          onChange={handleChange}
-          onKeyDown={handleKeyDown}
-          onBlur={saveName}
-          autoFocus
-          style={styles.input}
-        />
-      ) : (
-        <p onClick={handleNameClick} style={styles.name}>{newName}</p>
-      )}
+
+      <div>
+        {isEditing ? (
+          <input
+            type="text"
+            value={newName}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+            onBlur={saveName}
+            autoFocus
+            style={styles.input}
+          />
+        ) : (
+          <p onClick={handleNameClick} style={styles.name}>{newName}</p>
+        )}
+      </div>
     </div>
   );
 };
