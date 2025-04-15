@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 
 
 const SignInForm = () => {
-  
+
   const { login } = useAuth();
   const [rememberMe, setRememberMe] = useState(false);
   const [email, setEmail] = useState('');
@@ -54,12 +54,6 @@ const SignInForm = () => {
   
 
 
-  const handleForgotPassword = () => {
-    // Do something here, like:
-    console.log('Forgot password clicked');
-    // or navigate('/forgot-password');
-    // or openModal();
-  };
   return (
     <div>
       <div className="frame61">
@@ -81,22 +75,7 @@ const SignInForm = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
         <button type="submit">Sign In</button>
-        <button
-  onClick={handleForgotPassword}
-  style={{
-    background: 'none',
-    border: 'none',
-    padding: 0,
-    margin: 0,
-    color: 'white',
-    textDecoration: 'underline',
-    cursor: 'pointer',
-    fontSize: 'inherit',
-    fontFamily: 'inherit',
-  }}
->
-  Forgot Password?
-</button>
+        <a href="#">Forgot Password?</a>
       </div>
     </form>
           </div>
@@ -117,22 +96,7 @@ const SignInForm = () => {
               </p>
             </div>
             <p>
-              This page is protected by Google reCAPTCHA to ensure you’re not a bot.  <button
-  onClick={handleForgotPassword}
-  style={{
-    background: 'none',
-    border: 'none',
-    padding: 0,
-    margin: 0,
-    color: 'white',
-    textDecoration: 'underline',
-    cursor: 'pointer',
-    fontSize: 'inherit',
-    fontFamily: 'inherit',
-  }}
->
-  Forgot Password?
-</button>
+              This page is protected by Google reCAPTCHA to ensure you’re not a bot. <a href="#">Learn more.</a>
             </p>
           </div>
         </div>
