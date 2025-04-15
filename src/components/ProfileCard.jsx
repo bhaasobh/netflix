@@ -3,11 +3,13 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
 import { useNavigate } from 'react-router-dom'; // ⬅️ add this at the top
 import config from '../config';
+import { useAuth } from '../context/AuthContext';
 
 const ProfileCard = ({ name, profilePhoto, userId, profileId, refreshProfiles }) => {
   const [avatar, setAvatar] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState(name);
+  const { setProfileID } = useAuth();
   const navigate = useNavigate();
 
 
@@ -116,7 +118,10 @@ const ProfileCard = ({ name, profilePhoto, userId, profileId, refreshProfiles })
       <div
   style={profilePhoto === 6 ? styles.profileCardAdd : styles.profileCard}
   onClick={() => {
-    if (profilePhoto !== 6) navigate(`/Home/${profileId}`);
+    if (profilePhoto !== 6){
+      setProfileID(profileId);
+      navigate(`/Home`);
+    } 
   }}
 >
 

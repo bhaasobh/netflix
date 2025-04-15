@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import HeaderHome from './HeaderHome';
 import config from '../config';
+import MoreInfoModal from './MoreInfoModal';
+import { useAuth } from '../context/AuthContext';
 
-const HomeCover = ({ profileId, user }) => {
+
+const HomeCover = ({ profile}) => {
   const [movies, setMovies] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [showMoreInfoModal, setShowMoreInfoModal] = useState(false);
 const [selectedMovie, setSelectedMovie] = useState(null);
+const { mediaType } = useAuth();
+
 
 const handleMoreInfo = (movie) => {
   setSelectedMovie(movie);
@@ -16,7 +21,11 @@ const handleMoreInfo = (movie) => {
 
 
   useEffect(() => {
-    const url = `${config.TMDB_API}/movie/top_rated?language=en-US&page=1`;
+   
+    const url =
+  mediaType === 'movie'
+    ? `${config.TMDB_API}/movie/top_rated?language=en-US&page=1`
+    : `${config.TMDB_API}/tv/top_rated?language=en-US&page=1`;
     const options = {
       method: 'GET',
       headers: {
@@ -29,7 +38,8 @@ const handleMoreInfo = (movie) => {
       .then(res => res.json())
       .then(json => setMovies(json.results.slice(0, 4)))
       .catch(err => console.error(err));
-  }, []);
+      console.log("media type : ",mediaType);
+  }, [mediaType]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -40,50 +50,64 @@ const handleMoreInfo = (movie) => {
 
   return (
     <div style={styles.sliderContainer}>
-      {/* Header on top */}
-      <HeaderHome profileId={profileId} />
-
-      {/* Background slider */}
-      <div
-        style={{
-          ...styles.sliderWrapper,
-          width: `${movies.length * 100}%`,
-          transform: `translateX(-${currentIndex * (100 / movies.length)}%)`,
-        }}
-      >
-        {movies.map((movie, idx) => (
-          <div
-            key={idx}
-            style={{
-              ...styles.slide,
-              backgroundImage: `url(${config.TMDB_IMAGE}/${movie.backdrop_path})`,
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Movie overlay */}
-      <div style={styles.overlay}>
-        <div style={styles.badge}>N SERIES</div>
-        <h1 style={styles.title}>{movies[currentIndex]?.title}</h1>
-        <p style={styles.description}>{movies[currentIndex]?.overview}</p>
-        <div style={styles.buttons}>
-          <button style={styles.button} onClick={() => setShowModal(true)} >▶ Play</button>
-          {showModal && (
-  <div style={styles.modalBackdrop} onClick={() => setShowModal(false)}>
-    <div style={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-      <h2>{movies[currentIndex]?.title}</h2>
-      <p>{movies[currentIndex]?.overview}</p>
-      <button onClick={() => setShowModal(false)} style={styles.closeButton}>✖ סגור</button>
+    <HeaderHome profile={profile} />
+    <div
+      style={{
+        ...styles.sliderWrapper,
+        width: `${movies.length * 100}%`,
+        transform: `translateX(-${currentIndex * (100 / movies.length)}%)`,
+      }}
+    >
+      {movies.map((movie, idx) => (
+        <div
+          key={idx}
+          style={{
+            ...styles.slide,
+            backgroundImage: `url(${config.TMDB_IMAGE}/${movie.backdrop_path})`,
+          }}
+          onClick={() => handleMoreInfo(movie)}
+        />
+      ))}
     </div>
-  </div>
-)}
-
-          <button style={{ ...styles.button, backgroundColor: '#6d6d6eb3' }}>ℹ More Info</button>
+  
+   
+    <div style={styles.overlay}>
+      <div style={styles.badge}>N {mediaType === 'movie' ? 'MOVIES' : 'SERIES'}</div>
+      <h1 style={styles.title}>{movies[currentIndex]?.title}</h1>
+      <p style={styles.description}>{movies[currentIndex]?.overview}</p>
+  
+      <div style={styles.buttons}>
+       
+        <button style={styles.button} onClick={() => setShowModal(true)}>▶ Play</button>
+  
+        <button
+          onClick={() => handleMoreInfo(movies[currentIndex])}
+          style={{ ...styles.button, backgroundColor: '#6d6d6eb3' }}
+        >
+          ℹ More Info
+        </button>
+      </div>
+    </div>
+  
+  
+    {showModal && (
+      <div style={styles.modalBackdrop} onClick={() => setShowModal(false)}>
+        <div style={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+          <h2>{movies[currentIndex]?.title}</h2>
+          <p>{movies[currentIndex]?.overview}</p>
+          <button onClick={() => setShowModal(false)} style={styles.closeButton}>✖ סגור</button>
         </div>
       </div>
-    </div>
-  );
+    )}
+  
+    
+    <MoreInfoModal
+      show={showMoreInfoModal}
+      onClose={() => setShowMoreInfoModal(false)}
+      movie={selectedMovie}
+    />
+  </div>
+  )  
 };
 
 const styles = {

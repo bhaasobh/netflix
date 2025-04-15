@@ -1,36 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import { FaSearch, FaBell } from 'react-icons/fa';
 import config from '../config';
+import { useAuth } from '../context/AuthContext';
 
-const HeaderHome = ({ profileId }) => {
+const HeaderHome = ({ profile }) => {
+  const { setMediaType } = useAuth();
     
   const [avatar, setAvatar] = useState(null);
-    const { user, logout } = useAuth();
+    
 
-  const [profile, setProfile] = useState(null);
-
-  const fetchProfile = async (profileId) => {
-    try {
-      const res = await fetch(`${config.SERVER_API}/user/profiles/${user.id}/${profileId}`);
-      if (!res.ok) throw new Error('Failed to fetch profile');
-      const profileData = await res.json();
-      setProfile(profileData);
-    } catch (err) {
-      console.error('Error fetching profile:', err);
-    }
-  };
-
-
-  useEffect(() => {
-    console.log(`${config.SERVER_API}/user/profiles/${user.id}/${profileId}`);
-   
-      fetchProfile(profileId);
-  }, [profileId]); 
   useEffect(() => {
     if (profile) {
-      console.log('Profile updated:', profile);
       const getAvatarByName = async (name) => {
       try {
         const res = await fetch(`${config.SERVER_API}/avatar/${name}`);
@@ -53,9 +34,9 @@ const HeaderHome = ({ profileId }) => {
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <Link to="/" style={styles.logo}>NETFLIX</Link>
         <nav style={styles.nav}>
-          <Link to="/" style={{ color: 'white', textDecoration: 'none' }}>Home</Link>
-          <Link to="/tv" style={{ color: 'white', textDecoration: 'none' }}>TV Shows</Link>
-          <Link to="/movies" style={{ color: 'white', textDecoration: 'none' }}>Movies</Link>
+          <Link to="/whoiswatching" style={{ color: 'white', textDecoration: 'none' }}>Home</Link>
+          <Link onClick={() => setMediaType('tv')} style={{ color: 'white', textDecoration: 'none' }}>TV Shows</Link>
+          <Link onClick={() => setMediaType('movie')} style={{ color: 'white', textDecoration: 'none' }}>Movies</Link>
           <Link to="/new" style={{ color: 'white', textDecoration: 'none' }}>New & Popular</Link>
           <Link to="/list" style={{ color: 'white', textDecoration: 'none' }}>My List</Link>
           <Link to="/browse" style={{ color: 'white', textDecoration: 'none' }}>Browse</Link>

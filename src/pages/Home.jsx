@@ -1,9 +1,7 @@
 import React, { useState ,useEffect} from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
 import config from '../config';
-import HeaderHome from '../components/HeaderHome';
 import RowComponent from '../components/RowComponent';
 import HomeCover from '../components/HomeCover';
 import Footer from '../components/Footer';
@@ -11,16 +9,18 @@ import Footer from '../components/Footer';
 
 const Home = () => {
   const { user, logout } = useAuth();
-  const { profileId } = useParams();
+  const { profileID,setprofileID } = useAuth();
+  console.log("profile ",profileID);
+  
   const navigate = useNavigate();
   const [movies, setMovies] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const [profile, setProfile] = useState(null); // ✅ use array destructuring
+  const [profile, setProfile] = useState(null); 
 
-  const fetchProfile = async (profileId) => {
+  const fetchProfile = async (profileID) => {
     try {
-      const res = await fetch(`${config.SERVER_API}/user/profiles/${user.id}/${profileId}`);
+      const res = await fetch(`${config.SERVER_API}/user/profiles/${user.id}/${profileID}`);
       if (!res.ok) throw new Error('Failed to fetch profile');
       const profileData = await res.json();
       setProfile(profileData);
@@ -40,15 +40,15 @@ const Home = () => {
   
     fetch(url, options)
       .then(res => res.json())
-      .then(json => setMovies(json.results.slice(0, 4))) // only first 4 movies
+      .then(json => setMovies(json.results.slice(0, 4))) 
       .catch(err => console.error(err));
   }, []);
   
   useEffect(() => {
-    if (profileId) {
-      fetchProfile(profileId);
+    if (profileID) {
+      fetchProfile(profileID);
     }
-  }, [profileId]); // ✅ only run when profileId changes
+  }, [profileID]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -63,11 +63,11 @@ const backgroundImage = movies[currentIndex]?.backdrop_path
 
   return (
     <div style={styles.background}>
-      <HomeCover profileId={profileId}/>
+      <HomeCover profile={profile}/>
       <RowComponent title={"AI"}/>
       <RowComponent title={"10 Most New"}/>
       <RowComponent title={"10 Most watched in Israel"}/>
-      <RowComponent title={"10 Rated for this user "+profile.name}/>
+      <RowComponent title={"10 Rated for this user "+profile?.name}/>
       <RowComponent title={"ANIME"}/>
       <RowComponent title={"Castom Row"}/>
       <RowComponent title={"My List"}/>

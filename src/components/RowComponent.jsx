@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import config from '../config';
 
+import { useAuth } from '../context/AuthContext';
+
 const styles = {
   section: {
     padding: '20px 40px',
@@ -58,11 +60,15 @@ const styles = {
 };
 
 const RowComponent = ({title}) => {
+  const { mediaType } = useAuth();
   const [movies, setMovies] = useState([]);
   const rowRef = useRef(null);
 
   useEffect(() => {
-    const url = `${config.TMDB_API}/movie/top_rated?language=en-US&page=1`;
+    const url =
+    mediaType === 'movie'
+      ? `${config.TMDB_API}/movie/top_rated?language=en-US&page=1`
+      : `${config.TMDB_API}/tv/top_rated?language=en-US&page=1`;
     const options = {
       method: 'GET',
       headers: {
@@ -75,7 +81,7 @@ const RowComponent = ({title}) => {
       .then(res => res.json())
       .then(json => setMovies(json.results))
       .catch(err => console.error(err));
-  }, []);
+  }, [mediaType]);
 
   // Drag-to-scroll handlers
   useEffect(() => {
