@@ -13,7 +13,7 @@ const App = () => (
      <AuthProvider>
     <Routes>
       <Route path="/" element={<SignIn />} />
-      <Route path="/home" element={<Home />} />
+      <Route path="/Home/:profileId" element={<Home />} />
       <Route path="/SignUp" element={<SignUp />} />
       <Route path="/whoiswatching" element={<WhoIsWatching />} />
     </Routes>
