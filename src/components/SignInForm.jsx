@@ -4,6 +4,12 @@ import '../css/SignIn.css';
 import { Link } from 'react-router-dom';
 
 const SignInForm = () => {
+  const handleForgotPassword = () => {
+    // Do something here, like:
+    console.log('Forgot password clicked');
+    // or navigate('/forgot-password');
+    // or openModal();
+  };
   return (
     <div>
       <div className="frame61">
@@ -14,7 +20,23 @@ const SignInForm = () => {
               <input type="text" placeholder="Email or phone number" />
               <input type="password" placeholder="Password" />
               <button>Sign In</button>
-              <a href="#">Forgot Password?</a>
+              <button
+  onClick={handleForgotPassword}
+  style={{
+    background: 'none',
+    border: 'none',
+    padding: 0,
+    margin: 0,
+    color: 'white',
+    textDecoration: 'underline',
+    cursor: 'pointer',
+    fontSize: 'inherit',
+    fontFamily: 'inherit',
+  }}
+>
+  Forgot Password?
+</button>
+
             </div>
           </div>
           <div className="frame65">
@@ -28,7 +50,20 @@ const SignInForm = () => {
               </p>
             </div>
             <p>
-              This page is protected by Google reCAPTCHA to ensure you’re not a bot. <a href="#">Learn more.</a>
+              This page is protected by Google reCAPTCHA to ensure you’re not a bot. <button
+  onClick={handleForgotPassword}
+  style={{
+    background: 'none',
+    border: 'none',
+    padding: 0,
+    margin: 0,
+    color: 'white',
+    textDecoration: 'underline',
+    cursor: 'pointer',
+    fontSize: 'inherit',
+    fontFamily: 'inherit',
+  }}
+>Learn more.</button>
             </p>
           </div>
         </div>
