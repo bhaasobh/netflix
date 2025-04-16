@@ -3,15 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import { FaPlay } from 'react-icons/fa';
 import { IoMdAdd } from 'react-icons/io';
 import config from '../config';
-import { VscMute } from "react-icons/vsc";
 
+import { useAuth } from '../context/AuthContext';
 
 const MoreInfoCover = ({ movie }) => {
+    const { user } = useAuth(); 
   console.log("movie ",movie);
   const navigate = useNavigate();
 
   const handleReview = () => {
-    navigate(`/review/${movie.id}`);
+    if (!user) {
+      navigate('/SignIn'); 
+    } else {
+      navigate(`/Review/${movie.id}`);
+    }
   };
 
   if (!movie) return null;
