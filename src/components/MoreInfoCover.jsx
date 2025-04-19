@@ -1,13 +1,16 @@
-import React from 'react';
+import React ,{useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaPlay } from 'react-icons/fa';
 import { IoMdAdd } from 'react-icons/io';
 import config from '../config';
+import SuccessModal from './SuccessModal';
 
 import { useAuth } from '../context/AuthContext';
 
 const MoreInfoCover = ({ movie }) => {
-    const { user } = useAuth(); 
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+    const { user,profileID} = useAuth(); 
   console.log("movie ",movie);
   const navigate = useNavigate();
 
@@ -20,6 +23,37 @@ const MoreInfoCover = ({ movie }) => {
   };
 
   if (!movie) return null;
+  
+
+  const handleAddToList = async () => {
+    try {
+      const res = await fetch(`${config.SERVER_API}/profile-list/${user.id}/profile/${profileID}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(movie),
+      });
+  
+      if (!res.ok) throw new Error('Failed to add');
+  
+      const data = await res.json();
+  
+      // Choose message based on `added` flag
+      const name = movie.title || movie.name;
+      const msg = data.added
+        ? `✅ '${name}' was added successfully!`
+        : `⚠️ '${name}' is already in your list.`;
+  
+      setModalMessage(msg);
+      setShowModal(true);
+      setTimeout(() => setShowModal(false), 2000);
+    } catch (err) {
+      console.error(err);
+      setModalMessage('❌ Error adding to list');
+      setShowModal(true);
+      setTimeout(() => setShowModal(false), 2000);
+    }
+  };
+  
 
   return (
     <div style={styles.container}>
@@ -34,9 +68,15 @@ const MoreInfoCover = ({ movie }) => {
             <FaPlay style={{ marginRight: '5px' }} />
             Review
           </button>
-          <button style={styles.addButton}>
+          <button style={styles.addButton} onClick={handleAddToList}>
             <IoMdAdd size={24} />
           </button>
+          <SuccessModal
+  show={showModal}
+  message={modalMessage}
+  onClose={() => setShowModal(false)}
+/>
+
           
           
         </div>

@@ -5,6 +5,7 @@ import SignUp from './pages/SignUp';
 import Home from './pages/Home';
 import WhoIsWatching from './pages/whoswatching';
 import ReviewPage from './pages/ReviewPage';
+import MyListPage from './pages/MyListPage';
 
 
 import { AuthProvider } from './context/AuthContext';
@@ -18,6 +19,7 @@ const App = () => (
       <Route path="/SignUp" element={<SignUp />} />
       <Route path="/whoiswatching" element={<WhoIsWatching />} />
       <Route path="/Review/:mediaId" element={<ReviewPage />} />
+      <Route path="/MyList" element={<MyListPage />} />
     </Routes>
     </AuthProvider>
   </Router>

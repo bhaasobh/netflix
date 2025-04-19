@@ -8,8 +8,7 @@ import Footer from '../components/Footer';
 
 
 const Home = () => {
-  const { user, logout } = useAuth();
-  const { profileID,setprofileID } = useAuth();
+  const { user, profileID,mediaType } = useAuth();
   console.log("profile ",profileID);
   
   const navigate = useNavigate();
@@ -61,9 +60,52 @@ const backgroundImage = movies[currentIndex]?.backdrop_path
 : '';
 
 
+useEffect(() => {
+   
+  let url;
+
+if (mediaType === 'movie') {
+url = `${config.TMDB_API}/movie/top_rated?language=en-US&page=1`;
+} else if (mediaType === 'tv') {
+url = `${config.TMDB_API}/tv/top_rated?language=en-US&page=1`;
+} else if (mediaType === 'mylist') {
+url = `${config.SERVER_API}/user/profiles/${user.id}/${profileID}`;
+} else {
+// fallback or combined (movie + tv)
+url = null;
+}
+
+
+
+
+
+  console.log("url "+ mediaType + ":"+url);
+  const options = {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      Authorization: `${config.Authorization}`,
+    },
+  };
+if(url){
+  fetch(url, options)
+    .then(res => res.json())
+    .then(json => {
+      if (mediaType === 'mylist') {
+        setMovies((json.myList || []).slice(0, 4));
+      } else {
+        setMovies((json.results || []).slice(0, 4));
+      }
+      
+    })
+    .catch(err => console.error(err));
+    console.log("media type : ",movies);
+}
+}, [mediaType]);
+
   return (
     <div style={styles.background}>
-      <HomeCover profile={profile}/>
+      <HomeCover profile={profile} movies={movies} />
       <RowComponent title={"AI"}/>
       <RowComponent title={"10 Most New"}/>
       <RowComponent title={"10 Most watched in Israel"}/>

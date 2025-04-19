@@ -9,7 +9,7 @@ const ProfileCard = ({ name, profilePhoto, userId, profileId, refreshProfiles })
   const [avatar, setAvatar] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState(name);
-  const { setProfileID } = useAuth();
+  const { setProfileID ,setMediaType} = useAuth();
   const navigate = useNavigate();
 
 
@@ -120,6 +120,7 @@ const ProfileCard = ({ name, profilePhoto, userId, profileId, refreshProfiles })
   onClick={() => {
     if (profilePhoto !== 6){
       setProfileID(profileId);
+      setMediaType('all')
       navigate(`/Home`);
     } 
   }}
@@ -133,7 +134,7 @@ const ProfileCard = ({ name, profilePhoto, userId, profileId, refreshProfiles })
               size={20}
               style={styles.deleteIcon}
               onClick={(e) => {
-                e.stopPropagation(); // prevent navigation
+                e.stopPropagation(); 
                 handleDelete();
               }}
             />

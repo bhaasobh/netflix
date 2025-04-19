@@ -1,11 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [profileID, setProfileID] = useState(null); 
-  const [mediaType, setMediaType] = useState('movie');
+  const [mediaType, setMediaType] = useState('ALL');
 
   useEffect(() => {
     const storedUser = localStorage.getItem('auth');
@@ -23,6 +25,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     setProfileID(null); 
     localStorage.removeItem('auth');
+    navigate('/'); 
   };
   
 

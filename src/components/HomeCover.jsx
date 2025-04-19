@@ -5,14 +5,13 @@ import MoreInfoModal from './MoreInfoModal';
 import { useAuth } from '../context/AuthContext';
 
 
-const HomeCover = ({ profile}) => {
-  const [movies, setMovies] = useState([]);
+const HomeCover = ({ profile , movies , activeLink}) => {
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [showMoreInfoModal, setShowMoreInfoModal] = useState(false);
 const [selectedMovie, setSelectedMovie] = useState(null);
-const { mediaType } = useAuth();
-
+const { mediaType ,user,profileID} = useAuth();
 
 const handleMoreInfo = (movie) => {
   setSelectedMovie(movie);
@@ -20,26 +19,6 @@ const handleMoreInfo = (movie) => {
 };
 
 
-  useEffect(() => {
-   
-    const url =
-  mediaType === 'movie'
-    ? `${config.TMDB_API}/movie/top_rated?language=en-US&page=1`
-    : `${config.TMDB_API}/tv/top_rated?language=en-US&page=1`;
-    const options = {
-      method: 'GET',
-      headers: {
-        accept: 'application/json',
-        Authorization: `${config.Authorization}`,
-      },
-    };
-
-    fetch(url, options)
-      .then(res => res.json())
-      .then(json => setMovies(json.results.slice(0, 4)))
-      .catch(err => console.error(err));
-      console.log("media type : ",mediaType);
-  }, [mediaType]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -50,7 +29,7 @@ const handleMoreInfo = (movie) => {
 
   return (
     <div style={styles.sliderContainer}>
-    <HeaderHome profile={profile} />
+    <HeaderHome profile={profile} wantedPage={activeLink} />
     <div
       style={{
         ...styles.sliderWrapper,
@@ -63,7 +42,7 @@ const handleMoreInfo = (movie) => {
           key={idx}
           style={{
             ...styles.slide,
-            backgroundImage: `url(${config.TMDB_IMAGE}/${movie.backdrop_path})`,
+            backgroundImage: `url(${config.TMDB_IMAGE}/${movie.backdrop_path ||movie.poster_path})`,
           }}
           onClick={() => handleMoreInfo(movie)}
         />
