@@ -49,11 +49,11 @@ if(wantedPage)
             Home
           </Link>
           <Link
-            to="#"
-            onClick={() => {
+           onClick={() => {
               setMediaType('tv');
               setActiveLink('tv');
-            }}
+            }} to="/Home"
+            
             style={{
               ...styles.link,
               fontWeight: activeLink === 'tv' ? 'bold' : 'normal',
@@ -62,7 +62,7 @@ if(wantedPage)
             TV Shows
           </Link>
           <Link
-            to="#"
+            to="/Home"
             onClick={() => {
               setMediaType('movie');
               setActiveLink('movie');
@@ -75,7 +75,7 @@ if(wantedPage)
             Movies
           </Link>
           <Link
-            to="/new"
+            to="/Home"
             onClick={() => setActiveLink('new')}
             style={{
               ...styles.link,
@@ -95,7 +95,7 @@ if(wantedPage)
             My List
           </Link>
           <Link
-            to="/browse"
+            to="/Home"
             onClick={() => setActiveLink('browse')}
             style={{
               ...styles.link,

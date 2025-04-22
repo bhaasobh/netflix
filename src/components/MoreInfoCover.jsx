@@ -11,7 +11,6 @@ const MoreInfoCover = ({ movie }) => {
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
     const { user,profileID} = useAuth(); 
-  console.log("movie ",movie);
   const navigate = useNavigate();
 
   const handleReview = () => {
@@ -57,7 +56,7 @@ const MoreInfoCover = ({ movie }) => {
 
   return (
     <div style={styles.container}>
-      <img src={config.TMDB_IMAGE+'/'+movie.backdrop_path} alt={movie.title} style={styles.image} />
+      <img src={config.TMDB_IMAGE+'/'+(movie.backdrop_path?movie.backdrop_path:movie.poster_path)} alt={movie.title} style={styles.image} />
 
       <div style={styles.overlay}>
         <p style={styles.seriesLabel}>N SERIES</p>

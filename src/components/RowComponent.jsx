@@ -60,7 +60,7 @@ const styles = {
   }
 };
 
-const RowComponent = ({title,list}) => {
+const RowComponent = ({title,list=null,category='top_rated'}) => {
   const { mediaType } = useAuth();
   const rowRef = useRef(null);
   const [media,setMedia] = useState();
@@ -70,8 +70,8 @@ const RowComponent = ({title,list}) => {
 
   useEffect(() => {
     const fetchMedia = async () => {
-      const movieUrl = `${config.TMDB_API}/movie/top_rated?language=en-US&page=1`;
-      const tvUrl = `${config.TMDB_API}/tv/top_rated?language=en-US&page=1`;
+      const movieUrl = `${config.TMDB_API}/movie/${category}?language=en-US&page=1`;
+      const tvUrl = `${config.TMDB_API}/tv/${category}?language=en-US&page=1`;
   
       const options = {
         method: 'GET',
@@ -106,9 +106,17 @@ const RowComponent = ({title,list}) => {
         console.error('Error fetching media:', err);
       }
     };
-    console.log('row : ',media);
-    fetchMedia();
-  }, [mediaType]);
+
+    if(!list)
+    {
+      fetchMedia();
+    }else
+    {
+      setMedia(list);
+      console.log(list);
+    }
+    
+  }, [mediaType,list]);
   
 
   useEffect(() => {
@@ -159,7 +167,7 @@ const RowComponent = ({title,list}) => {
 
   return (
     <section style={styles.section}>
-      <h2 style={styles.title}>{title}</h2>
+      <h2 style={styles.title}>{title} {list?.length}</h2>
       <div ref={rowRef} style={styles.row}>
         {media?.map((movie, index) => (
           <div
@@ -171,7 +179,7 @@ const RowComponent = ({title,list}) => {
             }}
           >
             <img
-              src={`${config.TMDB_IMAGE}${movie.backdrop_path}`}
+              src={`${config.TMDB_IMAGE}${movie.backdrop_path? movie.backdrop_path : movie.poster_path}`}
               alt={movie.title}
               style={styles.image}
             />

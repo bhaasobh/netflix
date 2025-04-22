@@ -11,7 +11,7 @@ const HomeCover = ({ profile , movies , activeLink}) => {
   const [showModal, setShowModal] = useState(false);
   const [showMoreInfoModal, setShowMoreInfoModal] = useState(false);
 const [selectedMovie, setSelectedMovie] = useState(null);
-const { mediaType ,user,profileID} = useAuth();
+const { mediaType } = useAuth();
 
 const handleMoreInfo = (movie) => {
   setSelectedMovie(movie);

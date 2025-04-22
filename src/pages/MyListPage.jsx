@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import config from '../config';
 import { useAuth } from '../context/AuthContext';
 import HomeCover from '../components/HomeCover';
+import RowComponent from '../components/RowComponent';
+import { BiColor } from 'react-icons/bi';
+import Footer from '../components/Footer';
 
 const ITEMS_PER_PAGE = 12;
 
@@ -12,6 +15,12 @@ const MyListPage = () => {
   const [page, setPage] = useState(1);
 const [CoverList, setCoverList] = useState([]);
   const [profile, setProfile] = useState(null); 
+
+  const chunkArray = (arr, size) => {
+    return Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
+      arr.slice(i * size, i * size + size)
+    );
+  };
 
   const fetchProfile = async (profileID) => {
     try {
@@ -28,9 +37,7 @@ const [CoverList, setCoverList] = useState([]);
         fetchProfile(profileID);
       }
     }, [profileID]);
-  // Fetch list from server
   useEffect(() => {
-     console.log(`${config.SERVER_API}/profile-list/${user.id}/profile/${profileID}`);
     const fetchList = async () => {
      
       try {
@@ -39,6 +46,7 @@ const [CoverList, setCoverList] = useState([]);
         const data = await res.json();
         
         setMyList(data);
+        
         setCoverList(data.slice(0,4));
 
       } catch (err) {
@@ -50,7 +58,7 @@ const [CoverList, setCoverList] = useState([]);
   }, [user?.id, profileID],);
 
   useEffect(() => {
-    console.log("CoverList updated:", CoverList);
+ 
   }, [CoverList]);
 
   // Pagination (infinite scroll)
@@ -74,16 +82,16 @@ const [CoverList, setCoverList] = useState([]);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [page, myList]);
-
+  const chunks = chunkArray(myList, 10);  
   return (
     <div style={styles.background}>
+      
       <HomeCover profile={profile} movies={myList} activeLink="list"/>
-      <h1 style={styles.title}>הרשימה שלי</h1>
-      <div style={styles.grid}>
-        {visibleItems.map((movie, index) => (
-          <div key={index}>{movie.title}</div>
-        ))}
-      </div>
+      <h1 style={styles.Rowtitle}>My List</h1>
+      {chunks.map((chunk, index) => (
+        <RowComponent key={index} list={chunk} />
+      ))}
+      <Footer/>
     </div>
   );
   
@@ -91,24 +99,18 @@ const [CoverList, setCoverList] = useState([]);
 
 export default MyListPage;
 
-
 const styles = {
   background: {
-    background:'balck',
+    background: 'black',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     width: '100%',
-    height: '100vh'
+    minHeight: '100vh',
+    color: 'white'
   },
-  title: {
-    fontSize: '32px',
-    fontWeight: 'bold',
-    marginBottom: '20px',
-  },
-  grid: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: '15px',
-    justifyContent: 'flex-start',
+  Rowtitle: {
+    color: 'white',
+    padding: '10px 20px'
   },
 };
+

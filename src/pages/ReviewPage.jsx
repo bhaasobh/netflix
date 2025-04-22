@@ -27,7 +27,7 @@ const handleGoHome = () => {
             ? `${config.TMDB_API}/movie/${mediaId}`
             : `${config.TMDB_API}/tv/${mediaId}`;
       
-            console.log(url);
+          
         const options = {
           method: 'GET',
           headers: {
@@ -39,7 +39,6 @@ const handleGoHome = () => {
         try {
           const res = await fetch(url, options);
           const json = await res.json();
-          console.log("json",json);
           setMedia(json);
         } catch (err) {
           console.error('Error fetching media:', err);
@@ -51,9 +50,6 @@ const handleGoHome = () => {
   useEffect(() => {
     fetchReviews();
     fetchMedia();
-    console.log("media",mediaId);
-    console.log("user :",user.id);
-    console.log("media details" , media);
   }, [mediaId, user,media]);
 
   const fetchReviews = async () => {

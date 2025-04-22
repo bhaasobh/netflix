@@ -17,6 +17,8 @@ const MoreInfoModal = ({ show, onClose, movie }) => {
     if (!movie?.id) return;
   
     const fetchExtras = async () => {
+      console.log("movie ",movie);
+      console.log("media type : ",mediaType);
       try {
         const imgRes = await fetch(`${config.TMDB_API}/${mediaType}/${movie.id}/images`, {
           headers: {
@@ -44,13 +46,14 @@ const MoreInfoModal = ({ show, onClose, movie }) => {
             },
           });
           const seasonJson = await seasonRes.json();
+          console.log('sesonjson');
           setEpisodes(seasonJson.episodes || []);
         }
       } catch (err) {
         console.error('Failed to load extra info:', err);
       }
     };
-  console.log("eposide : ",episodes);
+    if(mediaType !="mylist")
     fetchExtras();
   }, [movie, mediaType]);
   
