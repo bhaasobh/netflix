@@ -216,6 +216,7 @@ useEffect(() => {
 
   return (
     <div style={styles.background}>
+
       <HomeCover profile={profile} movies={movies} />
       <RowComponent title={"10 Top Rated"}/>
       <RowComponent title={"10 Most popular"} category={"popular"}/>
@@ -223,6 +224,7 @@ useEffect(() => {
       <RowComponent title={"Comedy"} list={comedyList}/>
       <RowComponent title={"My list"} list={myList}/>
    
+
       <Footer/>
     </div>
    
