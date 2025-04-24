@@ -1,9 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // { email, role, token }
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [profileID, setProfileID] = useState(null); 
+  const [mediaType, setMediaType] = useState('ALL');
 
   useEffect(() => {
     const storedUser = localStorage.getItem('auth');
@@ -19,11 +23,14 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
+    setProfileID(null); 
     localStorage.removeItem('auth');
+    navigate('/'); 
   };
+  
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout,profileID, setProfileID, mediaType, setMediaType   }}>
       {children}
     </AuthContext.Provider>
   );

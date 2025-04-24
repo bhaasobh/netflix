@@ -1,78 +1,138 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import { FaSearch, FaBell } from 'react-icons/fa';
 import config from '../config';
+import { useAuth } from '../context/AuthContext';
 
-const HeaderHome = ({ profileId }) => {
-    
+const HeaderHome = ({ profile ,wantedPage }) => {
+  const { setMediaType ,logout ,user } = useAuth();
   const [avatar, setAvatar] = useState(null);
-    const { user, logout } = useAuth();
+  const [activeLink, setActiveLink] = useState('home');
 
-  const [profile, setProfile] = useState(null);
-
-  const fetchProfile = async (profileId) => {
-    try {
-      const res = await fetch(`${config.SERVER_API}/user/profiles/${user.id}/${profileId}`);
-      if (!res.ok) throw new Error('Failed to fetch profile');
-      const profileData = await res.json();
-      setProfile(profileData);
-    } catch (err) {
-      console.error('Error fetching profile:', err);
-    }
-  };
 
 
   useEffect(() => {
-    console.log(`${config.SERVER_API}/user/profiles/${user.id}/${profileId}`);
-   
-      fetchProfile(profileId);
-  }, [profileId]); 
-  useEffect(() => {
+if(wantedPage)
+{
+  setActiveLink(wantedPage);
+}
     if (profile) {
-      console.log('Profile updated:', profile);
       const getAvatarByName = async (name) => {
-      try {
-        const res = await fetch(`${config.SERVER_API}/avatar/${name}`);
-        if (!res.ok) throw new Error('Avatar not found');
-        const avatarData = await res.json();
-        setAvatar(avatarData);
-      } catch (err) {
-        console.error('Failed to fetch avatar by name:', err);
-      }
-    };
+        try {
+          const res = await fetch(`${config.SERVER_API}/avatar/${name}`);
+          if (!res.ok) throw new Error('Avatar not found');
+          const avatarData = await res.json();
+          setAvatar(avatarData);
+        } catch (err) {
+          console.error('Failed to fetch avatar by name:', err);
+        }
+      };
 
       getAvatarByName(profile?.profilePhoto);
     }
   }, [profile]);
 
-    
-
   return (
     <header style={styles.header}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <Link to="/" style={styles.logo}>NETFLIX</Link>
+        <Link to="/home" style={styles.logo}>NETFLIX</Link>
         <nav style={styles.nav}>
-          <Link to="/" style={{ color: 'white', textDecoration: 'none' }}>Home</Link>
-          <Link to="/tv" style={{ color: 'white', textDecoration: 'none' }}>TV Shows</Link>
-          <Link to="/movies" style={{ color: 'white', textDecoration: 'none' }}>Movies</Link>
-          <Link to="/new" style={{ color: 'white', textDecoration: 'none' }}>New & Popular</Link>
-          <Link to="/list" style={{ color: 'white', textDecoration: 'none' }}>My List</Link>
-          <Link to="/browse" style={{ color: 'white', textDecoration: 'none' }}>Browse</Link>
+          <Link
+            to="/Home"
+            onClick={() => {setMediaType('all');
+                        setActiveLink('home');}}
+            style={{
+              ...styles.link,
+              fontWeight: activeLink === 'home' ? 'bold' : 'normal',
+            }}
+          >
+            Home
+          </Link>
+          <Link
+           onClick={() => {
+              setMediaType('tv');
+              setActiveLink('tv');
+            }} to="/Home"
+            
+            style={{
+              ...styles.link,
+              fontWeight: activeLink === 'tv' ? 'bold' : 'normal',
+            }}
+          >
+            TV Shows
+          </Link>
+          <Link
+            to="/Home"
+            onClick={() => {
+              setMediaType('movie');
+              setActiveLink('movie');
+            }}
+            style={{
+              ...styles.link,
+              fontWeight: activeLink === 'movie' ? 'bold' : 'normal',
+            }}
+          >
+            Movies
+          </Link>
+          <Link
+            to="/Home"
+            onClick={() => setActiveLink('new')}
+            style={{
+              ...styles.link,
+              fontWeight: activeLink === 'new' ? 'bold' : 'normal',
+            }}
+          >
+            New & Popular
+          </Link>
+          <Link
+            to="/MyList"
+            onClick={() => {setActiveLink('list'); setMediaType('mylist');}}
+            style={{
+              ...styles.link,
+              fontWeight: activeLink === 'list' ? 'bold' : 'normal',
+            }}
+          >
+            My List
+          </Link>
+          <Link
+            to="/Home"
+            onClick={() => setActiveLink('browse')}
+            style={{
+              ...styles.link,
+              fontWeight: activeLink === 'browse' ? 'bold' : 'normal',
+            }}
+          >
+            Browse
+          </Link>
+          {
+            user?.role =='admin' &&
+            (
+              <Link
+            to="/Admin"
+            onClick={() => setActiveLink('admin')}
+            style={{
+              ...styles.link,
+              fontWeight: activeLink === 'admin' ? 'bold' : 'normal',
+            }}
+          >
+            Admin
+          </Link>
+            )
+          }
         </nav>
       </div>
 
       <div style={styles.rightIcons}>
         <FaSearch color="white" />
         <FaBell color="white" />
-        <div style={styles.rightIconsProfile}>
-        <div
-          style={{
-            ...styles.profileImg,
-            backgroundImage: avatar ? `url(${avatar.url})` : 'none', 
-          }}
-        ></div>
-        <div style={{color:'white'}}>{profile?.name}</div>
+        <div style={styles.rightIconsProfile} onClick={logout}>
+          <div
+            style={{
+              ...styles.profileImg,
+              backgroundImage: avatar ? `url(${avatar.url})` : 'none',
+            }}
+          ></div>
+          <div style={{ color: 'white' }}>{profile?.name}</div>
         </div>
       </div>
     </header>
@@ -82,7 +142,6 @@ const HeaderHome = ({ profileId }) => {
 export default HeaderHome;
 
 const styles = {
-     
   header: {
     width: '100%',
     height: '92px',
@@ -108,17 +167,21 @@ const styles = {
     color: '#fff',
     fontSize: '14px',
   },
+  link: {
+    color: 'white',
+    textDecoration: 'none',
+    cursor: 'pointer',
+  },
   rightIcons: {
     display: 'flex',
     alignItems: 'center',
     gap: '20px',
   },
   rightIconsProfile: {
- 
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    paddingTop:'10px'
+    paddingTop: '10px',
   },
   profileImg: {
     width: '32px',

@@ -1,5 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import config from '../config';
+import MoreInfoModal from './MoreInfoModal';
+
+import { useAuth } from '../context/AuthContext';
 
 const styles = {
   section: {
@@ -57,27 +60,66 @@ const styles = {
   }
 };
 
-const RowComponent = ({title}) => {
-  const [movies, setMovies] = useState([]);
+const RowComponent = ({title,list=null,category='top_rated'}) => {
+  const { mediaType } = useAuth();
   const rowRef = useRef(null);
+  const [media,setMedia] = useState();
+  const [showMoreInfoModal, setShowMoreInfoModal] = useState(false);
+  const [selectedMovie, setSelectedMovie] = useState(null);
 
+
+  
   useEffect(() => {
-    const url = `${config.TMDB_API}/movie/top_rated?language=en-US&page=1`;
-    const options = {
-      method: 'GET',
-      headers: {
-        accept: 'application/json',
-        Authorization: `${config.Authorization}`,
-      },
+    const fetchMedia = async () => {
+      const movieUrl = `${config.TMDB_API}/movie/${category}?language=en-US&page=1`;
+      const tvUrl = `${config.TMDB_API}/tv/${category}?language=en-US&page=1`;
+  
+      const options = {
+        method: 'GET',
+        headers: {
+          accept: 'application/json',
+          Authorization: `${config.Authorization}`,
+        },
+      };
+  
+      try {
+        if (mediaType === 'movie' || mediaType === 'tv') {
+          const url = mediaType === 'movie' ? movieUrl : tvUrl;
+          const res = await fetch(url, options);
+          const json = await res.json();
+          setMedia(json.results);
+        } else if (mediaType === 'all') {
+          const [movieRes, tvRes] = await Promise.all([
+            fetch(movieUrl, options),
+            fetch(tvUrl, options),
+          ]);
+          const [movieJson, tvJson] = await Promise.all([
+            movieRes.json(),
+            tvRes.json(),
+          ]);
+  
+          const combined = [...movieJson.results, ...tvJson.results];
+          const shuffled = combined.sort(() => Math.random() - 0.5);
+  
+          setMedia(shuffled);
+        }
+      } catch (err) {
+        console.error('Error fetching media:', err);
+      }
     };
 
-    fetch(url, options)
-      .then(res => res.json())
-      .then(json => setMovies(json.results))
-      .catch(err => console.error(err));
-  }, []);
+    if(!list)
+    {
+      fetchMedia();
+    }else
+    {
+      setMedia(list);
+      console.log(title+" : "+ list);
+    }
+    
+  }, [mediaType,list]);
+  
 
-  // Drag-to-scroll handlers
   useEffect(() => {
     const slider = rowRef.current;
     let isDown = false;
@@ -105,17 +147,17 @@ const RowComponent = ({title}) => {
       if (!isDown) return;
       e.preventDefault();
       const x = e.pageX - slider.offsetLeft;
-      const walk = (x - startX) * 2; // speed multiplier
+      const walk = (x - startX) * 2; 
       slider.scrollLeft = scrollLeft - walk;
     };
 
-    // Attach mouse events
+ 
     slider.addEventListener('mousedown', mouseDown);
     slider.addEventListener('mouseleave', mouseLeave);
     slider.addEventListener('mouseup', mouseUp);
     slider.addEventListener('mousemove', mouseMove);
 
-    // Cleanup
+ 
     return () => {
       slider.removeEventListener('mousedown', mouseDown);
       slider.removeEventListener('mouseleave', mouseLeave);
@@ -126,22 +168,39 @@ const RowComponent = ({title}) => {
 
   return (
     <section style={styles.section}>
-      <h2 style={styles.title}>{title}</h2>
+      <h2 style={styles.title}>{title} {list?.length}</h2>
       <div ref={rowRef} style={styles.row}>
-        {movies.map((movie, index) => (
-          <div key={movie.id} style={styles.card}>
+        {media?.map((movie, index) => (
+          <div
+            key={movie.id}
+            style={styles.card}
+            onClick={() => {
+              setShowMoreInfoModal(true);
+              setSelectedMovie(movie);
+            }}
+          >
             <img
-              src={`${config.TMDB_IMAGE}${movie.backdrop_path}`}
+              src={movie.source === 'local'
+                ? `${movie.poster_path}` // or your local path
+                : `${config.TMDB_IMAGE}${movie.backdrop_path || movie.poster_path}`}
               alt={movie.title}
               style={styles.image}
             />
+
             <div style={styles.badge}>Top Rated</div>
             {index < 10 && <div style={styles.top10}>TOP 10</div>}
           </div>
         ))}
       </div>
+  
+      <MoreInfoModal
+        show={showMoreInfoModal}
+        onClose={() => setShowMoreInfoModal(false)}
+        movie={selectedMovie}
+      />
     </section>
   );
+  
 };
 
 export default RowComponent;
