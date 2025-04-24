@@ -22,6 +22,7 @@ const Home = () => {
   const [ReviewmediaList, setReviewMediaList] = useState([]);
   const [profile, setProfile] = useState(null); 
 const [comedyList, setComedyList] = useState([]);
+const [myList, setMyList] = useState([]);
 
 
   const uniqueById = (array) => {
@@ -60,6 +61,25 @@ const [comedyList, setComedyList] = useState([]);
       .then(json => setMovies(json.results.slice(0, 4))) 
       .catch(err => console.error(err));
   }, []);
+
+  useEffect(() => {
+    const fetchList = async () => {
+     
+      try {
+        const res = await fetch(`${config.SERVER_API}/profile-list/${user.id}/profile/${profileID}`);
+        if (!res.ok) throw new Error('Failed to fetch list');
+        const data = await res.json();
+        
+        setMyList(data);
+        
+
+      } catch (err) {
+        console.error('Error fetching profile list:', err);
+      }
+    };
+
+    if (user?.id && profileID) fetchList();
+  }, [user?.id, profileID],);
   
   useEffect(() => {
     if (profileID) {
@@ -202,6 +222,7 @@ useEffect(() => {
       <RowComponent title={"10 Most popular"} category={"popular"}/>
       <RowComponent title={"My Reviewed List"} list={ReviewmediaList} />
       <RowComponent title={"Comedy"} list={comedyList}/>
+      <RowComponent title={"My list"} list={myList}/>
    
 
       <Footer/>
