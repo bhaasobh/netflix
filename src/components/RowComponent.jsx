@@ -68,6 +68,7 @@ const RowComponent = ({title,list=null,category='top_rated'}) => {
   const [selectedMovie, setSelectedMovie] = useState(null);
 
 
+  
   useEffect(() => {
     const fetchMedia = async () => {
       const movieUrl = `${config.TMDB_API}/movie/${category}?language=en-US&page=1`;
@@ -113,7 +114,7 @@ const RowComponent = ({title,list=null,category='top_rated'}) => {
     }else
     {
       setMedia(list);
-      console.log(list);
+      console.log(title+" : "+ list);
     }
     
   }, [mediaType,list]);
@@ -179,10 +180,13 @@ const RowComponent = ({title,list=null,category='top_rated'}) => {
             }}
           >
             <img
-              src={`${config.TMDB_IMAGE}${movie.backdrop_path? movie.backdrop_path : movie.poster_path}`}
+              src={movie.source === 'local'
+                ? `${movie.poster_path}` // or your local path
+                : `${config.TMDB_IMAGE}${movie.backdrop_path || movie.poster_path}`}
               alt={movie.title}
               style={styles.image}
             />
+
             <div style={styles.badge}>Top Rated</div>
             {index < 10 && <div style={styles.top10}>TOP 10</div>}
           </div>

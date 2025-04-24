@@ -5,7 +5,7 @@ import config from '../config';
 import { useAuth } from '../context/AuthContext';
 
 const HeaderHome = ({ profile ,wantedPage }) => {
-  const { setMediaType ,logout } = useAuth();
+  const { setMediaType ,logout ,user } = useAuth();
   const [avatar, setAvatar] = useState(null);
   const [activeLink, setActiveLink] = useState('home');
 
@@ -104,6 +104,21 @@ if(wantedPage)
           >
             Browse
           </Link>
+          {
+            user?.role =='admin' &&
+            (
+              <Link
+            to="/Admin"
+            onClick={() => setActiveLink('admin')}
+            style={{
+              ...styles.link,
+              fontWeight: activeLink === 'admin' ? 'bold' : 'normal',
+            }}
+          >
+            Admin
+          </Link>
+            )
+          }
         </nav>
       </div>
 

@@ -1,21 +1,39 @@
 import React, { useState ,useEffect} from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
 import config from '../config';
 import RowComponent from '../components/RowComponent';
 import HomeCover from '../components/HomeCover';
 import Footer from '../components/Footer';
 
+const GENRES = {
+  Action: 28,
+  Comedy: 35,
+  Drama: 18,
+  Horror: 27,
+  Animation: 16,
+};
 
 const Home = () => {
   const { user, profileID,mediaType } = useAuth();
-
   
-  const navigate = useNavigate();
+
   const [movies, setMovies] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-
+  const [ReviewmediaList, setReviewMediaList] = useState([]);
   const [profile, setProfile] = useState(null); 
+const [comedyList, setComedyList] = useState([]);
+
+
+  const uniqueById = (array) => {
+    const map = new Map();
+    array.forEach(item => {
+      if (!map.has(item.id)) {
+        map.set(item.id, item);
+      }
+    });
+    return Array.from(map.values());
+  };
+
 
   const fetchProfile = async (profileID) => {
     try {
@@ -58,7 +76,55 @@ const Home = () => {
 const backgroundImage = movies[currentIndex]?.backdrop_path
 ? `${config.TMDB_IMAGE}/${movies[currentIndex].backdrop_path}`
 : '';
+const fetchByGenre = async (genreId, type = 'movie') => {
+  const url = `${config.TMDB_API}/discover/${type}?with_genres=${genreId}&language=en-US&page=1`;
 
+  const res = await fetch(url, {
+    headers: {
+      accept: 'application/json',
+      Authorization: config.Authorization,
+    },
+  });
+
+  const data = await res.json();
+  return data.results;
+};
+useEffect(() => {
+  const fetchReviewedMedia = async () => {
+    try {
+      const res = await fetch(`${config.SERVER_API}/reviews/user/${user.id}`);
+      const reviews = await res.json();
+
+      const fullMediaData = await Promise.all(
+        reviews.map(async (review) => {
+          const type = review.mediaId.startsWith('tv_') ? 'tv' : 'movie';
+          const cleanId = review.mediaId.replace(/^(tv_|movie_)/, '');
+
+          const mediaRes = await fetch(`${config.TMDB_API}/${type}/${cleanId}`, {
+            headers: {
+              accept: 'application/json',
+              Authorization: config.Authorization,
+            }
+          });
+
+          return await mediaRes.json();
+        })
+      );
+
+      
+     
+      const uniqueMedia = uniqueById(fullMediaData); // ✅ remove duplicates
+      setReviewMediaList(uniqueMedia);
+      
+    } catch (err) {
+      console.error('Error fetching reviewed media:', err);
+    }
+
+
+  };
+
+  if (user?.id) fetchReviewedMedia();
+}, [user]);
 
 useEffect(() => {
    
@@ -73,7 +139,6 @@ url = `${config.SERVER_API}/user/profiles/${user.id}/${profileID}`;
 } else {
 url = null;
 }
-
 
 
   const options = {
@@ -98,14 +163,45 @@ if(url){
 }
 }, [mediaType]);
 
+
+useEffect(() => {
+  const fetchMediaByType = async (type) => {
+    try {
+      const res = await fetch(`${config.SERVER_API}/media?type=${type}`);
+      const data = await res.json();
+      setMovies((prev) => [...prev, ...data]); // או החלף `setMovies` לפי הצורך
+    } catch (err) {
+      console.error('Error fetching media by type:', err);
+    }
+  };
+
+  const getData = async () => {
+    let data = [];
+  
+    if (mediaType === 'tv') {
+      data = await fetchByGenre(GENRES.Comedy, 'tv');
+    } else {
+      data = await fetchByGenre(GENRES.Comedy, 'movie');
+    }
+  
+    setComedyList(data);
+  };
+  
+
+  getData();
+  fetchMediaByType("movie");
+  
+}, [mediaType]);
+
+
   return (
     <div style={styles.background}>
       <HomeCover profile={profile} movies={movies} />
       <RowComponent title={"10 Top Rated"}/>
       <RowComponent title={"10 Most popular"} category={"popular"}/>
-      <RowComponent title={"ANIME"}/>
-      <RowComponent title={"Castom Row"}/>
-      <RowComponent title={"My List"}/>
+      <RowComponent title={"My Reviewed List"} list={ReviewmediaList} />
+      <RowComponent title={"Comedy"} list={comedyList}/>
+   
       <Footer/>
     </div>
    

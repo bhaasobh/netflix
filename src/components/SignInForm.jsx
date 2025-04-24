@@ -41,8 +41,7 @@ const SignInForm = () => {
           profiles: data.profiles
         });
   
-        if (data.role === 'admin') navigate('/admin');
-        else navigate('/whoiswatching');
+      navigate('/whoiswatching');
       } else {
         alert(data.message || 'Login failed');
       }

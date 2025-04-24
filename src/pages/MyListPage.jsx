@@ -5,6 +5,7 @@ import HomeCover from '../components/HomeCover';
 import RowComponent from '../components/RowComponent';
 import { BiColor } from 'react-icons/bi';
 import Footer from '../components/Footer';
+import HeaderHome from '../components/HeaderHome';
 
 const ITEMS_PER_PAGE = 12;
 
@@ -84,22 +85,39 @@ const [CoverList, setCoverList] = useState([]);
   }, [page, myList]);
   const chunks = chunkArray(myList, 10);  
   return (
-    <div style={styles.background}>
-      
-      <HomeCover profile={profile} movies={myList} activeLink="list"/>
-      <h1 style={styles.Rowtitle}>My List</h1>
-      {chunks.map((chunk, index) => (
-        <RowComponent key={index} list={chunk} />
-      ))}
-      <Footer/>
-    </div>
+    <>
+      {myList.length === 0 ? (
+        <div style={styles.background}>
+          <HeaderHome profile={profile} wantedPage={"mylist"} />
+          <div style={styles.emptyMessage}>
+            <h2>😢 Your list is empty</h2>
+            <p>Start adding movies or series to see them here.</p>
+          </div>
+          <Footer />
+        </div>
+      ) : (
+        <div style={styles.background}>
+          <HomeCover profile={profile} movies={myList} activeLink="list" />
+          <h1 style={styles.Rowtitle}>My List</h1>
+          {chunks.map((chunk, index) => (
+            <RowComponent key={index} list={chunk} />
+          ))}
+          <Footer />
+        </div>
+      )}
+    </>
   );
-  
-};
-
+}  
 export default MyListPage;
 
 const styles = {
+  emptyMessage: {
+    textAlign: 'center',
+    marginTop: '50px',
+    fontSize: '18px',
+    color: '#ccc',
+  },
+  
   background: {
     background: 'black',
     backgroundSize: 'cover',
