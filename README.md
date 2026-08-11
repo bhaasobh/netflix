@@ -1,70 +1,193 @@
-# Getting Started with Create React App
+# Netflix-Inspired Streaming Platform
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern React application inspired by Netflix, built to demonstrate a complete streaming experience with authentication, profile switching, content browsing, personal lists, media reviews, and an admin content-management flow.
 
-## Available Scripts
+This project was designed as a full frontend experience with real API integration and a strong focus on user experience, product thinking, and clean component architecture.
 
-In the project directory, you can run:
+## Overview
 
-### `npm start`
+The app allows users to:
+- Sign in and sign up
+- Create and manage multiple profiles
+- Browse movies and TV content from TMDB
+- View a home page with featured media and category-based rows
+- Add media to a personal "My List"
+- Review favorite titles
+- Access an admin panel to add new titles to the platform
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Key Features
 
-### `npm test`
+### User Authentication
+- Login and registration flow
+- Session persistence with local storage
+- Protected user context for application-wide state
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Profile Management
+- Create multiple user profiles
+- Select a profile before entering the app
+- Personalize content based on the active profile
 
-### `npm run build`
+### Media Discovery
+- Netflix-style horizontal movie/TV rows
+- Featured hero section with rotating media cards
+- TMDB-powered content and posters
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Personalization
+- My List feature
+- Review-related media tracking
+- Personalized home experience per user profile
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Admin Experience
+- Add new movies or TV shows through a dedicated admin screen
+- Simple modal form to submit media metadata
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### UI/UX
+- Dark theme inspired by streaming platforms
+- Responsive layout
+- Reusable row and modal components
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Tech Stack
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- React.js
+- React Router
+- JavaScript (ES6+)
+- Bootstrap / React-Bootstrap
+- TMDB API integration
+- REST API communication
+- LocalStorage for auth/profile state
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+---
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Project Structure
 
-## Learn More
+```bash
+src/
+├── App.js
+├── config.js
+├── components/
+│   ├── AddMediaForm.jsx
+│   ├── Footer.jsx
+│   ├── Header.jsx
+│   ├── HeaderHome.jsx
+│   ├── HomeCover.jsx
+│   ├── MoreInfoModal.jsx
+│   ├── ProfileCard.jsx
+│   ├── RowComponent.jsx
+│   ├── SignInForm.jsx
+│   ├── SignUpForm.jsx
+│   └── SuccessModal.jsx
+├── context/
+│   └── AuthContext.js
+├── css/
+│   ├── Footer.css
+│   ├── SignIn.css
+│   └── WhoIsWatching.css
+├── pages/
+│   ├── Admin.jsx
+│   ├── Home.jsx
+│   ├── MyListPage.jsx
+│   ├── ReviewPage.jsx
+│   ├── SignIn.jsx
+│   ├── SignUp.jsx
+│   └── whoswatching.jsx
+└── index.js
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## How the App Works
 
-### Code Splitting
+1. The user signs in or creates an account.
+2. They choose or create a profile.
+3. The home page loads featured and trending media from TMDB.
+4. Users can browse rows by category and open a title detail modal.
+5. Media can be saved to the user's list and reviewed.
+6. Admin users can add new titles through the admin panel.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
+## Important Notes
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+This project is connected to:
+- TMDB for movie and show data
+- A backend API service for authentication, profiles, reviews, and media storage
 
-### Making a Progressive Web App
+The app configuration is centralized in the file `src/config.js`, which contains the API endpoints and the TMDB token.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+> For a real production environment, credentials and API keys should be moved to environment variables instead of being stored directly in the client code.
 
-### Advanced Configuration
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Getting Started
 
-### Deployment
+### Prerequisites
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- Node.js v18+
+- npm or yarn
 
-### `npm run build` fails to minify
+### Installation
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```bash
+npm install
+```
+
+### Run locally
+
+```bash
+npm start
+```
+
+Then open:
+
+```bash
+http://localhost:3000
+```
+
+### Production build
+
+```bash
+npm run build
+```
+
+---
+
+## Why This Project Is Strong for Interviews
+
+This project demonstrates multiple important software engineering skills:
+
+- Frontend development with React and routing
+- State management using React context
+- API integration with third-party services
+- User flow design and content personalization
+- UI implementation inspired by a real-world product
+- Full-stack product thinking through user, profile, and media data
+
+It shows practical experience in building a product-like interface that looks and behaves like a real streaming service while also emphasizing data flow and user experience.
+
+---
+
+## Future Improvements
+
+- Add search and filters
+- Implement real favorites/reviews persistence with better validation
+- Add dark/light theme toggle
+- Create a more advanced admin dashboard
+- Improve performance with lazy loading, caching, and optimization
+- Move secrets to environment variables and secure the backend flow
+
+---
+
+## Project Status
+
+This is a functional frontend prototype and product-style demo that highlights product design, API integration, and user-centered interaction patterns.
+
+---
+
+## Author
+
+Built as a portfolio-style project to demonstrate frontend development, product thinking, and real-world app workflow design.
+
